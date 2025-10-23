@@ -28,7 +28,7 @@ function chargerNetflopXml() {
             // console.log(xmlDoc);
 
             afficherFilmsXML(xmlDoc);
-
+            afficherSerieXML(xmlDoc);//apelle
         }
         else {
             console.error("Erreur lors du chargement du fichier XML");
@@ -48,16 +48,43 @@ function chargerNetflopXml() {
 
 }
 
-chargerNetflopXml();
 
 /**
  * Fonction pour afficher les films depuis le document XML
  * @param {Document} xmlDoc Document XML parsé par DOMParser
  */
 
-
-
 //ici
+function afficherSerieXML(xmlDoc) {
+   
+   
+    // Récupérer le conteneur HTML où afficher les série   -1
+    let container = document.getElementById("section-serie");
+    
+
+    // Créer un titre pour la section
+    let titre = document.createElement("h2");
+    titre.textContent = "series";
+    container.appendChild(titre);
+
+    // Recupéérer TOUS les éléments <film> du XML
+    // getElementsByTagName() retourne une collection
+
+
+
+
+    let series = xmlDoc.getElementsByTagName("serie");
+    console.log(series);
+    
+    // Parcourir tous les films (attention fils est un HTMLCollection, du coup pas un vrai tableau)
+
+    for (let i = 0; i < series.length; i++) {
+        let serieCard = creatCarteXML(series[i]);
+    container.appendChild(serieCard);
+    }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
+}//la
+
+//ici    -2
 function afficherFilmsXML(xmlDoc) {
    
    
@@ -83,6 +110,32 @@ function afficherFilmsXML(xmlDoc) {
     for (let i = 0; i < films.length; i++) {
         let filmCard = creatCarteXML(films[i]);
     container.appendChild(filmCard);
+    }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
+}//la
+
+//ici    -3
+function affichermangaXML(xmlDoc) {
+   
+   
+    // Récupérer le conteneur HTML où afficher les films
+    let container = document.getElementById("manga");
+
+    // Créer un titre pour la section
+    let titre = document.createElement("h2");
+    titre.textContent = "manga";
+    container.appendChild(titre);
+
+    // Recupéérer TOUS les éléments <film> du XML
+    // getElementsByTagName() retourne une collection
+
+    let manga = xmlDoc.getElementsByTagName("manga");
+    console.log(manga);
+    
+    // Parcourir tous les films (attention fils est un HTMLCollection, du coup pas un vrai tableau)
+
+    for (let i = 0; i < manga.length; i++) {
+        let mangaCard = creatCarteXML(manga[i]);
+    container.appendChild(mangaCard);
     }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
 }//la
 /**
@@ -120,17 +173,19 @@ let img = document.createElement('img');
 // définir la source de l'image
 img.src = url;
 img.alt = nom;
-img.className = 'card-image col-3'; //style class
+img.className = 'card-image col-2'; //style class
+
 
 // creer le conteneur pour les informations
 // creer un div pour contenir toutes les infos textuelles
 let infoDiv = document.createElement('div');
-infoDiv.className ='card-info';
+infoDiv.className ='card-info bg-primary card-body d-flex justify-content-between align-items-center';
 
 // Creer le titre
 // creer un element H3 pour le titre
 let titreElement = document.createElement('h3');
 titreElement.textContent = nom;
+titreElement.className ="card-title";
 
 // creer l'element genre
 // creer un paragraphe pour le genre
@@ -169,21 +224,38 @@ resumerContainer.appendChild(resumerElement);
 
 //ajouter tous les elements au conteneur d'information
 infoDiv.appendChild(titreElement);
-infoDiv.appendChild(genreElement);
+infoDiv.appendChild(img);
+infoDiv.appendChild(genreElement);//placement en odre de placement
 infoDiv.appendChild(realisateurElement);
 infoDiv.appendChild(dateElement);
 infoDiv.appendChild(resumerContainer);
 
 // on ajoute l'image et les informations à la carte
-card.appendChild(img);
-card.appendChild(infoDiv);
 
+card.appendChild(infoDiv);
+//récupére l'id de l'élements depuis l'attribut id
+let itemId= item.getAttribute('id');
+
+//récupére le nom de la balise XML pour determiner la catégorie
+let itemType= item.tagName.toLowerCase(); //à coriger
+
+//verifier que l'id exists avant de rendre le card cliquable
+
+if(itemId && itemType) {
+
+//ajouter l'évenement on click
+
+card.onclick= function () { 
+
+//rediriger vers la page détail avec l'id et le type dynamique
+window.location.href=`./PageAnger.html?id=${itemId}&type=${itemType}`;
+    }
+}
 // on retourne la carte complete
 return card;
 
 }
 
-//faire des fonction qui s'afficher correctement 
 
 /**
  * charger les données lorsque le dom est complétement chargé
