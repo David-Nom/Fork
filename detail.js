@@ -2,13 +2,14 @@
 
 function chargerNetflopXml() {
   // Créer un nouveal objet XMLHttpRequest
-  let xhr = new XMLHttpRequest();
+  let xhr = new XMLHttpRequest();//cherche un fichier 
+
   console.log("afficherFilms");
   // Configurer une requête
   // Utiliser la méthode 'GET' = pour récuperer des données
   // Le nom du fichier à charger
   // - true = requête asynchrone (ne bloque pas le navigateur et l'exécution du code)
-  xhr.open("GET", "./netflop.xml", true);
+  xhr.open("GET", "./netflop.json", true);
 
   // Définir le gestionnaire d'évenement pour le chargement
   xhr.onload = function () {
@@ -18,17 +19,16 @@ function chargerNetflopXml() {
       //
       // Parser le XML avec DOMPARSER
       // On créé une instance de DOMParser
-      let parser = new DOMParser();
       // console.log(parser);
 
       // Parse le texte XML reçu et convertit en document XML
       // xhr.responseText = le contenu du fichier XML en texte
       // "text/xml" = type MIME pour indiquer que c'est du XML
-      let xmlDoc = parser.parseFromString(xhr.responseText, "text/xml");
-      // console.log(xmlDoc);
+         let data = JSON.parse(xhr.responseText);
+      // console.log(JSONDoc);
 
-      afficherItemXML(xmlDoc);
-      // afficherSerieXML(xmlDoc);//apelle
+      afficherItemXML(JSONDoc);
+      // afficherSerieXML(JSONDoc);//apelle
       console.log("afficherItemXML");
     } else {
       console.error("Erreur lors du chargement du fichier XML");
@@ -48,7 +48,7 @@ function chargerNetflopXml() {
 }
 
 //ici    -2
-function afficherFilmsXML(xmlDoc) {
+function afficherFilmsXML(JSONDoc) {
   // Récupérer le conteneur HTML où afficher les films
   let container = document.getElementById("section-films");
 
@@ -67,7 +67,7 @@ function afficherFilmsXML(xmlDoc) {
   // let type = getUrlParams().type
 
   // 2 fonction  puis le cherche
-  let item = chercherItemParType(xmlDoc, type, id);
+  let item = chercherItemParType(JSONDoc, type, id);
 
   let card =creeDetailsXML(item); //
 
@@ -115,30 +115,29 @@ function creeDetailsXML(item) {
   card.className = "card";
 
   //extraire du XML
-  let nom = item.getElementsByTagName("nom")[0].textContent;
-
+  let nom = item.nom;
   // recuperer le genre depuis la balise <genre>
-  let genre = item.getElementsByTagName("genre")[0].textContent;
+  let genre = item.genre;
 
   // recuperer le réalisateur depuis la balise <realisateur>
-  let realisateur = item.getElementsByTagName("realisateur")[0].textContent;
+  let realisateur = item.realisateur;
 
   // recuperer la date de sortie depuis la balise <dateSortie>
-  let dateSortie = item.getElementsByTagName("dateSortie")[0].textContent;
+  let dateSortie = item.dateSortie;
 
   // recuperer le résumé depuis la balise <resumer>
   //trim() = supprimer les espaces au début et à la fin
-  let resumer = item.getElementsByTagName("resumer")[0].textContent.trim();
+  let resumer = item.textContent;
 
   // recuperer l'url de l'image depuis la balise <url>
-  let url = item.getElementsByTagName("url")[0].textContent;
+  let url = item.textContent;
 
   // creer un element img pour afficher l'image
   let img = document.createElement("img");
   // définir la source de l'image
-  img.src = url;
-  img.alt = nom;
-  img.className = "card-image col-6"; //style class
+    img.src = url;
+    img.alt = nom;
+    img.className = "card-image col-6"; //style class
 
   // creer le conteneur pour les informations
   // creer un div pour contenir toutes les infos textuelles
@@ -149,35 +148,35 @@ function creeDetailsXML(item) {
   // Creer le titre
   // creer un element H3 pour le titre
   let titreElement = document.createElement("h3");
-  titreElement.textContent = nom;
-  titreElement.className = "card-title";
+    titreElement.textContent = nom;
+    titreElement.className = "card-title";
 
   // creer l'element genre
   // creer un paragraphe pour le genre
   let genreElement = document.createElement("p");
   //innerHTML permet d'inserer du html
-  genreElement.innerHTML = "<strong>Genre:</strong>" + genre;
+    genreElement.innerHTML = "<strong>Genre:</strong>" + genre;
 
   // creer l'element realisateur
   // creer un paragraphe pour le realisateur
   let realisateurElement = document.createElement("p");
-  realisateurElement.innerHTML = "<strong> Réalisateur</strong>" + realisateur;
+    realisateurElement.innerHTML = "<strong> Réalisateur</strong>" + realisateur;
 
   // creer l'element date de sortie
   // creer un paragraphe pour la date de sortie
   let dateElement = document.createElement("p");
-  dateElement.innerHTML = "<strong> date de  sortie</strong>" + dateSortie;
+    dateElement.innerHTML = "<strong> date de  sortie</strong>" + dateSortie;
 
   // creer le conteneur du résumé
   // creer un div pour contenir le résumé et le bouton
   let resumerContainer = document.createElement("div");
-  resumerContainer.className = "resume-container";
+    resumerContainer.className = "resume-container";
 
   // creer l'element résumé
   // creer le paragraphe pour le résumé
   let resumerElement = document.createElement("p");
-  resumerElement.className = "resume";
-  resumerElement.innerHTML = "<strong>Résumé :</strong>" + resumer;
+    resumerElement.className = "resume";
+    resumerElement.innerHTML = "<strong>Résumé :</strong>" + resumer;
 
   //ajouter le resumé au conteneur
   resumerContainer.appendChild(resumerElement);
@@ -207,14 +206,14 @@ function getUrlParams() {
   let params = new URLSearchParams(window.location.search);
   return {
     //objet
-    id: params.get("id"),
+    id: params.id,
     type: params.get("type"),
   };
 }
 //faire des fonction qui s'afficher correctement
-function chercherItemParType(xmlDoc, itemType, itemId) {
+function chercherItemParType(JSONDoc, itemType, itemId) {
   //on va rechercher l'element dans notre xml par sont type (films,series,ect..)
-  let items = xmlDoc.getElementsByTagName(itemType); //dans le xmldoc cherche tous les tagname itemtype
+  let items = JSONDoc.getElementsByTagName(itemType); //dans le JSONDoc cherche tous les tagname itemtype
   //parcours la liste des items
   for (let i = 0; i < items.length; i++) {
     let item = items[i];
@@ -225,7 +224,7 @@ function chercherItemParType(xmlDoc, itemType, itemId) {
   }
   return null;
 }
-// let item = chercherItemParType(xmlDoc, itemType,itemId);
+// let item = chercherItemParType(JSONDoc, itemType,itemId);
 // afficherDetailItem(item,itemType);
 // function afficherDetailItem(item, itemType) {
 //     let url = getxmlValue(item,'url');
@@ -234,6 +233,27 @@ function chercherItemParType(xmlDoc, itemType, itemId) {
  * charger les données lorsque le dom est complétement chargé
  * DOMContentLoaded = évenement déclenché lorsque le html est pret
  */
+
+let categoryMap = {
+  'film': {categorie: 'films', tableau: data.netflop.filmsfilm},
+  'serie': {categorie: 'serie', tableau: data.netflop.series.serie},
+  'documentaire': {categorie: 'documentaire', tableau: data.netflop.},
+  'manga': {categorie: 'mangas', tableau: data.netflop.filmsfilm},
+  'concer': {categorie: 'concerts', tableau: data.netflop.concerts.concerts},
+  'show' :{categorie: 'animes', tableau:data.netflop.animes.anime},
+  'concert' :{categorie: 'shows', tableau: data.netflop.concerts.concert},
+}
+let config = categorieMap[itemType];
+  if(!config){
+    return null;
+  }
+  if (config.tableau && Array.isArray(config.tableau)) {
+    for(let i = 0; i < config.tableau.length; i++)
+      if(configtableau.length[i].id === itemId){
+        return config.Tableau[i];
+      }
+  } return null;
+
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("le DOM est chargé");

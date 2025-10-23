@@ -33,7 +33,10 @@ h1:hover{
     background: linear-gradient(210deg, orange, black);
 }
 .fondbleu{
-    background: linear-gradient(190deg, rgb(47, 0, 255), black);
+    background: linear-gradient(190deg, rgb(228, 228, 232), black);
+    font-size: 120%;
+    color: white;
+
 }
 .fondgris{
     background: linear-gradient(190deg, rgb(41, 40, 44), black);

@@ -8,27 +8,29 @@ function chargerNetflopXml() {
     // Utiliser la méthode 'GET' = pour récuperer des données
     // Le nom du fichier à charger
     // - true = requête asynchrone (ne bloque pas le navigateur et l'exécution du code)
-    xhr.open("GET","./netflop.xml",true);
+    xhr.open("GET","./netflop.json",true);//ouvrire le fichier netflop
 
     // Définir le gestionnaire d'évenement pour le chargement
     xhr.onload = function (){
         // Vérifie si la requête réussi
         // status 200 = OK (succès)
         if (xhr.status === 200) {
-
+            let data = JSON.parse(xhr.responseText);
+            console.log(data);
             // Parser le XML avec DOMPARSER
             // On créé une instance de DOMParser
-            let parser = new DOMParser();
+            //let parser = new DOMParser();
             // console.log(parser);
 
             // Parse le texte XML reçu et convertit en document XML
             // xhr.responseText = le contenu du fichier XML en texte
             // "text/xml" = type MIME pour indiquer que c'est du XML
-            let xmlDoc = parser.parseFromString(xhr.responseText, "text/xml");
-            // console.log(xmlDoc);
+            //let JSONDoc = parser.parseFromString(xhr.responseText, "text/xml");
+            // console.log(JSONDoc);
 
-            afficherFilmsXML(xmlDoc);
-            afficherSerieXML(xmlDoc);//apelle
+            
+            afficherFilmsXML(data.netflop.films.film);//remplacer xml par json
+            afficherSerieXML(data.netflop.series.serie);
         }
         else {
             console.error("Erreur lors du chargement du fichier XML");
@@ -51,11 +53,11 @@ function chargerNetflopXml() {
 
 /**
  * Fonction pour afficher les films depuis le document XML
- * @param {Document} xmlDoc Document XML parsé par DOMParser
+ * @param {Document} JSONDoc Document XML parsé par DOMParser
  */
 
 //ici
-function afficherSerieXML(xmlDoc) {
+function afficherSerieXML(series) {
    
    
     // Récupérer le conteneur HTML où afficher les série   -1
@@ -73,19 +75,17 @@ function afficherSerieXML(xmlDoc) {
 
 
 
-    let series = xmlDoc.getElementsByTagName("serie");
-    console.log(series);
     
     // Parcourir tous les films (attention fils est un HTMLCollection, du coup pas un vrai tableau)
 
     for (let i = 0; i < series.length; i++) {
-        let serieCard = creatCarteXML(series[i]);
+        let serieCard = creatCarteJSON(series[i],"serie");
     container.appendChild(serieCard);
     }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
 }//la
 
 //ici    -2
-function afficherFilmsXML(xmlDoc) {
+function afficherFilmsXML(films) {
    
    
     // Récupérer le conteneur HTML où afficher les films
@@ -102,19 +102,17 @@ function afficherFilmsXML(xmlDoc) {
 
 
 
-    let films = xmlDoc.getElementsByTagName("film");
-    console.log(films);
     
     // Parcourir tous les films (attention fils est un HTMLCollection, du coup pas un vrai tableau)
 
     for (let i = 0; i < films.length; i++) {
-        let filmCard = creatCarteXML(films[i]);
+        let filmCard = creatCarteJSON(films[i],"film");
     container.appendChild(filmCard);
     }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
 }//la
 
 //ici    -3
-function affichermangaXML(xmlDoc) {
+function affichermangaXML(JSONDoc) {
    
    
     // Récupérer le conteneur HTML où afficher les films
@@ -128,13 +126,13 @@ function affichermangaXML(xmlDoc) {
     // Recupéérer TOUS les éléments <film> du XML
     // getElementsByTagName() retourne une collection
 
-    let manga = xmlDoc.getElementsByTagName("manga");
+    let manga = JSONDoc.getElementsByTagName("manga");
     console.log(manga);
     
     // Parcourir tous les films (attention fils est un HTMLCollection, du coup pas un vrai tableau)
 
     for (let i = 0; i < manga.length; i++) {
-        let mangaCard = creatCarteXML(manga[i]);
+        let mangaCard = creatCarteJSON(manga[i],"manga");
     container.appendChild(mangaCard);
     }//pour chaque catégories  crée variable qui stoque ul + crée une boucle for qui fonctionnera sur les li
 }//la
@@ -143,30 +141,30 @@ function affichermangaXML(xmlDoc) {
  * @param {element} item - element XML (film, serie, etc)
  * @returns {HTMLElement} - element div representant la carte
  */
-function creatCarteXML(item){
+function creatCarteJSON(item, itemType){
 
     //crée un div pour la carte
 let card = document.createElement('div');
-card.className = 'card';
+card.className = 'card';//class bootstrap ou css
 
 //extraire du XML
-let nom = item.getElementsByTagName('nom')[0].textContent;
+let nom = item.nom;
 
 // recuperer le genre depuis la balise <genre>
-let genre = item.getElementsByTagName('genre')[0].textContent;
+let genre = item.genre;
 
 // recuperer le réalisateur depuis la balise <realisateur>
-let realisateur = item.getElementsByTagName('realisateur')[0].textContent;
+let realisateur = item.realisateur;
 
 // recuperer la date de sortie depuis la balise <dateSortie>
-let dateSortie = item.getElementsByTagName('dateSortie')[0].textContent;
+let dateSortie = item.dateSortie;
 
 // recuperer le résumé depuis la balise <resumer>
 //trim() = supprimer les espaces au début et à la fin
-let resumer = item.getElementsByTagName('resumer')[0].textContent.trim();
+let resumer = item.resumer;
 
 // recuperer l'url de l'image depuis la balise <url>
-let url = item.getElementsByTagName('url')[0].textContent;
+let url = item.url;
 
 // creer un element img pour afficher l'image
 let img = document.createElement('img');
@@ -179,7 +177,7 @@ img.className = 'card-image col-2'; //style class
 // creer le conteneur pour les informations
 // creer un div pour contenir toutes les infos textuelles
 let infoDiv = document.createElement('div');
-infoDiv.className ='card-info bg-primary card-body d-flex justify-content-between align-items-center';
+infoDiv.className ='card-info bg-primary card-body d-flex justify-content-center align-items-center fondbleu row ';
 
 // Creer le titre
 // creer un element H3 pour le titre
@@ -234,10 +232,9 @@ infoDiv.appendChild(resumerContainer);
 
 card.appendChild(infoDiv);
 //récupére l'id de l'élements depuis l'attribut id
-let itemId= item.getAttribute('id');
+let itemId= item.id;
 
-//récupére le nom de la balise XML pour determiner la catégorie
-let itemType= item.tagName.toLowerCase(); //à coriger
+
 
 //verifier que l'id exists avant de rendre le card cliquable
 
