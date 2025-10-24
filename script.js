@@ -179,6 +179,8 @@ img.className = 'card-image col-2'; //style class
 let infoDiv = document.createElement('div');
 infoDiv.className ='card-info bg-primary card-body d-flex justify-content-center align-items-center fondbleu row ';
 
+//adbeweeb2024
+
 // Creer le titre
 // creer un element H3 pour le titre
 let titreElement = document.createElement('h3');

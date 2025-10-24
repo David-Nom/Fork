@@ -236,8 +236,8 @@ function chercherItemParType(JSONDoc, itemType, itemId) {
 
 let categoryMap = {
   'film': {categorie: 'films', tableau: data.netflop.filmsfilm},
-  'serie': {categorie: 'serie', tableau: data.netflop.series.serie},
-  'documentaire': {categorie: 'documentaire', tableau: data.netflop.},
+  'serie': {categorie: 'series', tableau: data.netflop.series.serie},
+  'documentaire': {categorie: 'documentaires', tableau: data.netflop.documentaires.documentaire},
   'manga': {categorie: 'mangas', tableau: data.netflop.filmsfilm},
   'concer': {categorie: 'concerts', tableau: data.netflop.concerts.concerts},
   'show' :{categorie: 'animes', tableau:data.netflop.animes.anime},
